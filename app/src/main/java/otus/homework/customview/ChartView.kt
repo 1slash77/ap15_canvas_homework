@@ -8,7 +8,9 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import kotlin.math.min
 
 class ChartView @JvmOverloads constructor (
     context: Context,
@@ -18,10 +20,11 @@ class ChartView @JvmOverloads constructor (
     private val list = ArrayList<Int>()
     private var maxValue = 0
     private var barWidth = 50.dp
-    private val minH = 800.dp
+    private val minH = 300.dp
     private lateinit var paintBaseFill : Paint
     private lateinit var paintStroke : Paint
     private val rect = RectF()
+    private val sb = StringBuilder()
 
     init {
         if (isInEditMode) {
@@ -54,21 +57,49 @@ class ChartView @JvmOverloads constructor (
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val wMode = MeasureSpec.getMode(widthMeasureSpec)
         val wSize = MeasureSpec.getSize(widthMeasureSpec)
+        val hMode = MeasureSpec.getMode(heightMeasureSpec)
         val hSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        var newW = wSize
-        var newH = Integer.max(minH.toInt(), hSize)
+        sb.clear().append("ChartView: ").append("${this.hashCode()}, ")
 
-        when (wMode) {
+        var w: Int = 0
+        when(wMode) {
             MeasureSpec.EXACTLY -> {
+                sb.append("w-EXACTLY")
+                w = wSize
             }
             MeasureSpec.AT_MOST -> {
-                newW = Integer.min((list.size * barWidth).toInt(), wSize)
+                sb.append("w-AT_MOST")
+                w = min(barWidth * list.size, wSize.toFloat()).toInt()
             }
-            MeasureSpec.UNSPECIFIED -> newW = (list.size * barWidth).toInt()
+            MeasureSpec.UNSPECIFIED -> {
+                sb.append("w-UNSPECIFIED")
+                w = (barWidth * list.size).toInt()
+            }
         }
 
-        setMeasuredDimension(newW, newH)
+        sb.append(", ")
+
+        var h: Int = 0
+        when(hMode) {
+            MeasureSpec.EXACTLY -> {
+                sb.append("h-EXACTLY")
+                h = hSize
+            }
+            MeasureSpec.AT_MOST -> {
+                sb.append("h-AT_MOST")
+                h = min(300, hSize)
+            }
+            MeasureSpec.UNSPECIFIED -> {
+                sb.append("h-UNSPECIFIED")
+                h = min(300, hSize)
+            }
+        }
+
+        sb.append(", ${wSize}x${hSize}")
+
+        Log.d("mytag", sb.toString())
+        setMeasuredDimension(w, h)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -81,6 +112,7 @@ class ChartView @JvmOverloads constructor (
         val heightPerValue = height.toFloat() / maxValue
 
         for (item in list) {
+
             rect.set(
                 currentX,
                 (height - heightPerValue * item),

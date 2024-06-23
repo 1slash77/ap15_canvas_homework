@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".MainActivity">
 
     <otus.homework.customview.PieChartView
         android:id="@+id/pie_chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_gravity="center"
+        android:layout_gravity="bottom"
         android:layout_weight="1"
         />
 
@@ -21,8 +22,8 @@
         android:id="@+id/chart"
         android:layout_margin="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="5"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:visibility="gone"
         />
 

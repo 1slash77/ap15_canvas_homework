@@ -110,7 +110,7 @@ class PieChartView @JvmOverloads constructor(
         val hMode = MeasureSpec.getMode(heightMeasureSpec)
         val hSize = MeasureSpec.getSize(heightMeasureSpec)
 
-       sb.clear().append("${this.hashCode()}, ")
+       sb.clear().append("PieChartView: ").append("${this.hashCode()}, ")
 
         var w: Int = 0
         when(wMode) {
